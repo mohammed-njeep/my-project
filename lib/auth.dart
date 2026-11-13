@@ -5,4 +5,10 @@ class Authclass {
   signup(String email, String pass) async {
     await auth.signUp(password: pass, email: email);
   }
+
+  login(String email, String pass) async {
+    await auth.signInWithPassword(password: pass, email: email);
+  }
+
+  logout() {}
 }
