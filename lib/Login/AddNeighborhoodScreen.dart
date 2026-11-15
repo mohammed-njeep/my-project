@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/services/services.dart';
+import 'package:my_project/service/services.dart';
 
 class AddNeighborhoodScreen extends StatefulWidget {
   const AddNeighborhoodScreen({super.key});
