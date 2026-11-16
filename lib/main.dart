@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:my_project/Login/AddHouseholdScreen.dart';
 import 'package:my_project/Login/AddNeighborhoodScreen.dart';
 import 'package:my_project/assignment_page.dart';
@@ -6,21 +7,24 @@ import 'package:my_project/auth.dart';
 import 'package:my_project/service/services.dart';
 import 'package:my_project/service/subProfile.dart';
 
+=======
+>>>>>>> b7f47c7 (2)
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'Splash_Screen/SplashScreen .dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Services myServices = Services();
+
   await Supabase.initialize(
-    url: myServices.url,
-    publishableKey: myServices.publishableKey,
+    url: 'https://ehfcdcgajtzvblxspaba.supabase.co',
+    anonKey: 'sb_publishable_JyyJ74uOZmaImTVpkFZCkQ_hCJQpaAW', 
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
+<<<<<<< HEAD
 // It's handy to then extract the Supabase client in a variable for later uses
 final supabase = Supabase.instance.client;
 
@@ -32,10 +36,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+=======
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+>>>>>>> b7f47c7 (2)
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+<<<<<<< HEAD
       home: AssignmentPage(),
       // Scaffold(
       //   appBar: AppBar(),
@@ -73,3 +83,9 @@ class _MyAppState extends State<MyApp> {
 //     );
 //   }
 // }
+=======
+      home: AdvancedSplashScreen(),
+    );
+  }
+}
+>>>>>>> b7f47c7 (2)
