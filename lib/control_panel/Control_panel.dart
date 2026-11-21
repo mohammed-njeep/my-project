@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:untitled1/Admain_control/Assign_Researchers.dart';
 import 'package:untitled1/Admain_control/managment_user.dart';
+import '../Admain_control/Neighborhood_Managment.dart';
+import '../Admain_control/Roles_permissions.dart';
+import '../Admain_control/Update_Assign_Researchers.dart';
 import '../Login/LoginScreen.dart';
 
 // ========================================== //
@@ -22,33 +26,41 @@ class _ControlState extends State<Control> {
   void initState() {
     super.initState();
 
-    // جميع الأقسام والوظائف في النظام 
+    // جميع الأقسام والوظائف في النظام
     final allViews = [
-      const SystemManagementView(),      // 0: وظائف مدير النظام
-      const SupervisorReviewView(),      // 1: وظائف المشرف
-      const FieldSurveyView(),           // 2: وظائف الباحث
-      const ReportsAndAuditView(),       // 3: التقارير والتدقيق
+      const SystemManagementView(), // 0: وظائف مدير النظام
+      const SupervisorReviewView(), // 1: وظائف المشرف
+      const FieldSurveyView(), // 2: وظائف الباحث
+      const ReportsAndAuditView(), // 3: التقارير والتدقيق
     ];
 
     final allMenu = [
-      {"icon": Icons.admin_panel_settings_rounded, "text": "وظائف المدير", "index": 0},
-      {"icon": Icons.supervisor_account_rounded, "text": "وظائف المشرف", "index": 1},
+      {
+        "icon": Icons.admin_panel_settings_rounded,
+        "text": "وظائف المدير",
+        "index": 0
+      },
+      {
+        "icon": Icons.supervisor_account_rounded,
+        "text": "وظائف المشرف",
+        "index": 1
+      },
       {"icon": Icons.home_work_rounded, "text": "وظائف الباحث", "index": 2},
       {"icon": Icons.analytics_rounded, "text": "التقارير", "index": 3},
     ];
 
     // التوجيه الديناميكي للتبويبات حسب الدور الذي يختاره المستخدم عند تسجيل الدخول
     if (widget.role == "مدير النظام") {
-      views = [allViews[0], allViews[3]]; 
+      views = [allViews[0], allViews[3]];
       menuItems = [allMenu[0], allMenu[3]];
     } else if (widget.role == "المشرف") {
-      views = [allViews[1], allViews[3]]; 
+      views = [allViews[1], allViews[3]];
       menuItems = [allMenu[1], allMenu[3]];
     } else if (widget.role == "الباحث") {
-      views = [allViews[2]]; 
+      views = [allViews[2]];
       menuItems = [allMenu[2]];
     } else if (widget.role == "مشاهد / مدقق") {
-      views = [allViews[3]]; 
+      views = [allViews[3]];
       menuItems = [allMenu[3]];
     } else {
       views = [];
@@ -67,7 +79,8 @@ class _ControlState extends State<Control> {
           automaticallyImplyLeading: false,
           title: Row(
             children: const [
-              Icon(Icons.people_alt_rounded, color: Color(0xFF00E5FF), size: 24),
+              Icon(Icons.people_alt_rounded,
+                  color: Color(0xFF00E5FF), size: 24),
               SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -83,7 +96,7 @@ class _ControlState extends State<Control> {
             ],
           ),
           actions: [
-            // زر تسجيل خروج 
+            // زر تسجيل خروج
             IconButton(
               icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
               tooltip: 'تسجيل خروج',
@@ -117,7 +130,7 @@ class _ControlState extends State<Control> {
                   ),
                 ),
         ),
-        // شريط تنقل سفلي 
+        // شريط تنقل سفلي
         bottomNavigationBar: menuItems.length > 1
             ? BottomNavigationBar(
                 currentIndex: currentIndex,
@@ -125,7 +138,8 @@ class _ControlState extends State<Control> {
                 selectedItemColor: const Color(0xFF00E5FF),
                 unselectedItemColor: Colors.white60,
                 type: BottomNavigationBarType.fixed,
-                selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                selectedLabelStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 items: menuItems.map((item) {
                   return BottomNavigationBarItem(
                     icon: Icon(item["icon"]),
@@ -219,15 +233,15 @@ class ActionGlassmorphicButton extends StatelessWidget {
   }
 }
 
-// دالة لتوزيع الأزرار  
+// دالة لتوزيع الأزرار
 Widget buildActionGrid(List<Widget> buttons) {
   return GridView.count(
-    crossAxisCount: 2, 
+    crossAxisCount: 2,
     crossAxisSpacing: 14,
     mainAxisSpacing: 14,
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
-    childAspectRatio: 1.4, 
+    childAspectRatio: 1.4,
     children: buttons,
   );
 }
@@ -246,7 +260,8 @@ class SystemManagementView extends StatelessWidget {
         children: [
           const Text(
             'لوحة تحكم مدير النظام',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           buildActionGrid([
@@ -256,35 +271,59 @@ class SystemManagementView extends StatelessWidget {
               colors: const [Color(0xFF00E5FF), Color(0xFF0288D1)],
               onPressed: () {
                 Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const UsersManagementView(),
-      ),
-    );
+                  MaterialPageRoute(
+                    builder: (context) => const UsersManagementView(),
+                  ),
+                );
               },
             ),
             ActionGlassmorphicButton(
               titel: 'الصلاحيات والأدوار',
               icon: Icons.admin_panel_settings_rounded,
               colors: const [Color(0xFF00E5FF), Color(0xFF0288D1)],
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const RolesPermissionsView(),
+                  ),
+                );
+              },
             ),
             ActionGlassmorphicButton(
               titel: 'إدارة الحارات',
               icon: Icons.map_rounded,
               colors: const [Color(0xFF00E5FF), Color(0xFF0288D1)],
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const NeighborhoodsManagementView(),
+                  ),
+                );
+              },
             ),
             ActionGlassmorphicButton(
               titel: 'إسناد الباحثين',
               icon: Icons.assignment_ind_rounded,
               colors: const [Color(0xFF00E5FF), Color(0xFF0288D1)],
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SupervisorAssignmentsView(),
+                  ),
+                );
+              },
             ),
             ActionGlassmorphicButton(
-              titel: 'سياسات RLS',
-              icon: Icons.security_rounded,
+              titel: 'إدارة إسناد الباحثين',
+              icon: Icons.update,
               colors: const [Color(0xFF00E5FF), Color(0xFF0288D1)],
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ManageAssignmentsView(),
+                  ),
+                );
+              },
             ),
             ActionGlassmorphicButton(
               titel: 'سجل التدقيق',
@@ -314,7 +353,8 @@ class SupervisorReviewView extends StatelessWidget {
         children: [
           const Text(
             'لوحة تحكم المشرف والمتابعة',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           buildActionGrid([
@@ -364,7 +404,8 @@ class FieldSurveyView extends StatelessWidget {
         children: [
           const Text(
             'تطبيق المسح الميداني (للباحث)',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           buildActionGrid([
@@ -414,7 +455,8 @@ class ReportsAndAuditView extends StatelessWidget {
         children: [
           const Text(
             'التقارير والإحصاءات العامة',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           buildActionGrid([

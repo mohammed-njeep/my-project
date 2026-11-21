@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,7 +17,7 @@ class _UsersManagementViewState extends State<UsersManagementView> {
   @override
   void initState() {
     super.initState();
-    _listenToUsersChanges(); // تفعيل التحديث الحي التلقائي
+    _listenToUsersChanges();
   }
 
   // الاستماع المباشر والحي لتحديثات جدول profiles تلقائياً
@@ -37,49 +38,46 @@ class _UsersManagementViewState extends State<UsersManagementView> {
             setState(() {
               _isLoading = false;
             });
-            _showSnackBar('خطأ في المزامنة: $error', Colors.redAccent);
+            _showSnackBar('خطأ في مزامنة البيانات، تحقق من الاتصال.', Colors.redAccent);
           }
         });
   }
 
-  // نافذة نجاح الإضافة 
-  void _showSuccessDialog() {
+  // نافذة نجاح العمليات بتصميم أبيض أنيق
+  void _showSuccessDialog(String message) {
     showDialog(
       context: context,
       builder: (context) {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: AlertDialog(
-            backgroundColor: const Color(0xFF0A192F),
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 16),
-                const Icon(
-                  Icons.check_circle_rounded,
-                  color: Color(0xFF10B981),
-                  size: 65,
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: Color(0xFF10B981),
+                    size: 50,
+                  ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'تم إضافة المستخدم بنجاح',
-                  style: TextStyle(
-                    color: Colors.white,
+                Text(
+                  message,
+                  style: const TextStyle(
+                    color: Color(0xFF0F172A),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'تم إنشاء الحساب وحفظ الصلاحيات في النظام',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -88,17 +86,18 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00E5FF),
+                      backgroundColor: const Color(0xFF0284C7),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
+                      elevation: 0,
                     ),
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
                       'حسناً',
                       style: TextStyle(
-                        color: Color(0xFF0A192F),
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -113,12 +112,12 @@ class _UsersManagementViewState extends State<UsersManagementView> {
     );
   }
 
-  // نافذة إضافة مستخدم جديد 
+  // نافذة إضافة مستخدم جديد بتصميم رسمي فاتح
   void _showAddUserDialog() {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    String selectedRole = 'researcher'; // الدور الافتراضي
+    String selectedRole = 'researcher';
     bool isDialogLoading = false;
 
     showDialog(
@@ -130,18 +129,17 @@ class _UsersManagementViewState extends State<UsersManagementView> {
             return Directionality(
               textDirection: TextDirection.rtl,
               child: AlertDialog(
-                backgroundColor: const Color(0xFF0A192F),
+                backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1.5),
                 ),
                 title: Row(
                   children: const [
-                    Icon(Icons.person_add_rounded, color: Color(0xFF00E5FF)),
+                    Icon(Icons.person_add_rounded, color: Color(0xFF0284C7)),
                     SizedBox(width: 10),
                     Text(
-                      'إضافة مستخدم جديد',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      'إضافة مستخدم جديد للنظام',
+                      style: TextStyle(color: Color(0xFF0F172A), fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -152,40 +150,44 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                       const SizedBox(height: 10),
                       TextField(
                         controller: nameController,
-                        style: const TextStyle(color: Colors.white),
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(color: Color(0xFF0F172A)),
                         decoration: _dialogInputDecoration('الاسم الكامل', Icons.person_outline),
                       ),
                       const SizedBox(height: 14),
                       TextField(
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(color: Colors.white),
+                        textDirection: TextDirection.ltr,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(color: Color(0xFF0F172A)),
                         decoration: _dialogInputDecoration('البريد الإلكتروني', Icons.email_outlined),
                       ),
                       const SizedBox(height: 14),
                       TextField(
                         controller: passwordController,
                         obscureText: true,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: _dialogInputDecoration('كلمة المرور', Icons.lock_outline),
+                        textDirection: TextDirection.ltr,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(color: Color(0xFF0F172A)),
+                        decoration: _dialogInputDecoration('كلمة المرور (6 أحرف على الأقل)', Icons.lock_outline),
                       ),
                       const SizedBox(height: 14),
                       DropdownButtonFormField<String>(
                         value: selectedRole,
-                        dropdownColor: const Color(0xFF0F172A),
-                        style: const TextStyle(color: Colors.white),
-                        decoration: _dialogInputDecoration('الدور الوظيفي', Icons.badge_outlined),
+                        dropdownColor: Colors.white,
+                        style: const TextStyle(color: Color(0xFF0F172A)),
+                        decoration: _dialogInputDecoration('الدور الوظيفي والصلاحيات', Icons.badge_outlined),
                         items: const [
                           DropdownMenuItem(value: 'admin', child: Text('مدير النظام')),
                           DropdownMenuItem(value: 'supervisor', child: Text('مشرف')),
-                          DropdownMenuItem(value: 'researcher', child: Text('باحث')),
+                          DropdownMenuItem(value: 'researcher', child: Text('باحث ميداني')),
                           DropdownMenuItem(value: 'viewer', child: Text('مشاهد / مدقق')),
                         ],
                         onChanged: (val) {
                           if (val != null) {
-                            setDialogState(() {
-                              selectedRole = val;
-                            });
+                            setDialogState(() => selectedRole = val);
                           }
                         },
                       ),
@@ -195,21 +197,22 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                 actions: [
                   TextButton(
                     onPressed: isDialogLoading ? null : () => Navigator.pop(context),
-                    child: const Text('إلغاء', style: TextStyle(color: Colors.white60)),
+                    child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00E5FF),
+                      backgroundColor: const Color(0xFF0284C7),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      elevation: 0,
                     ),
                     onPressed: isDialogLoading
                         ? null
                         : () async {
+                            final name = nameController.text.trim();
                             final email = emailController.text.trim();
+                            final password = passwordController.text.trim();
 
-                            if (nameController.text.trim().isEmpty ||
-                                email.isEmpty ||
-                                passwordController.text.trim().isEmpty) {
+                            if (name.isEmpty || email.isEmpty || password.isEmpty) {
                               _showSnackBar('يرجى ملء جميع الحقول المطلوبة', Colors.orange);
                               return;
                             }
@@ -219,7 +222,12 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                             ).hasMatch(email);
 
                             if (!emailValid) {
-                              _showSnackBar('البريد الإلكتروني غير صالح، يرجى كتابة إيميل صحيح', Colors.redAccent);
+                              _showSnackBar('البريد الإلكتروني غير صالح، يرجى كتابة صيغة صحيحة', Colors.redAccent);
+                              return;
+                            }
+
+                            if (password.length < 6) {
+                              _showSnackBar('كلمة المرور قصيرة، يجب أن تكون 6 أحرف على الأقل', Colors.orange);
                               return;
                             }
 
@@ -227,31 +235,35 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                             setDialogState(() => isDialogLoading = true);
 
                             try {
-                              // إنشاء المستخدم وتمرير الاسم والدور في الـ data 
-                              // (الـ Trigger في قاعدة البيانات سيتكفل بنسخه إلى جدول profiles تلقائياً)
                               await supabase.auth.signUp(
                                 email: email,
-                                password: passwordController.text.trim(),
-                                data: {
-                                  'full_name': nameController.text.trim(),
-                                  'role': selectedRole,
-                                },
+                                password: password,
+                                data: {'full_name': name, 'role': selectedRole},
                               );
 
                               nav.pop();
-                              _showSuccessDialog();
+                              _showSuccessDialog('تم إضافة المستخدم بنجاح');
+                            } on AuthException catch (e) {
+                              setDialogState(() => isDialogLoading = false);
+                              String msg = 'حدث خطأ أثناء الإنشاء';
+                              if (e.message.contains('already registered')) {
+                                msg = 'عذراً، البريد الإلكتروني مستخدم مسبقاً لحساب آخر';
+                              } else {
+                                msg = 'خطأ: ${e.message}';
+                              }
+                              _showSnackBar(msg, Colors.redAccent);
                             } catch (e) {
                               setDialogState(() => isDialogLoading = false);
-                              _showSnackBar('فشل الإنشاء: $e', Colors.redAccent);
+                              _showSnackBar('لا يتوفر اتصال بالإنترنت، تحقق من الشبكة', Colors.redAccent);
                             }
                           },
                     child: isDialogLoading
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(color: Color(0xFF0A192F), strokeWidth: 2),
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
-                        : const Text('حفظ وإنشاء', style: TextStyle(color: Color(0xFF0A192F), fontWeight: FontWeight.bold)),
+                        : const Text('حفظ وإنشاء', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -262,13 +274,212 @@ class _UsersManagementViewState extends State<UsersManagementView> {
     );
   }
 
+  // نافذة تعديل بيانات المستخدم
+  void _showEditUserDialog(Map<String, dynamic> user) {
+    final TextEditingController nameController = TextEditingController(text: user['full_name']);
+    nameController.selection = TextSelection.fromPosition(
+      TextPosition(offset: nameController.text.length),
+    );
+
+    String selectedRole = user['role'] ?? 'researcher';
+    bool isDialogLoading = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                title: Row(
+                  children: const [
+                    Icon(Icons.edit_rounded, color: Color(0xFF0284C7)),
+                    SizedBox(width: 10),
+                    Text(
+                      'تعديل بيانات المستخدم',
+                      style: TextStyle(color: Color(0xFF0F172A), fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: nameController,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(color: Color(0xFF0F172A)),
+                      decoration: _dialogInputDecoration('الاسم الكامل', Icons.person_outline),
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<String>(
+                      value: selectedRole,
+                      dropdownColor: Colors.white,
+                      style: const TextStyle(color: Color(0xFF0F172A)),
+                      decoration: _dialogInputDecoration('الدور الوظيفي', Icons.badge_outlined),
+                      items: const [
+                        DropdownMenuItem(value: 'admin', child: Text('مدير النظام')),
+                        DropdownMenuItem(value: 'supervisor', child: Text('مشرف')),
+                        DropdownMenuItem(value: 'researcher', child: Text('باحث ميداني')),
+                        DropdownMenuItem(value: 'viewer', child: Text('مشاهد / مدقق')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() => selectedRole = val);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: isDialogLoading ? null : () => Navigator.pop(context),
+                    child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0284C7),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      elevation: 0,
+                    ),
+                    onPressed: isDialogLoading
+                        ? null
+                        : () async {
+                            final name = nameController.text.trim();
+                            if (name.isEmpty) {
+                              _showSnackBar('يرجى كتابة الاسم الكامل', Colors.orange);
+                              return;
+                            }
+
+                            final nav = Navigator.of(context);
+                            setDialogState(() => isDialogLoading = true);
+
+                            try {
+                              await supabase
+                                  .from('profiles')
+                                  .update({
+                                    'full_name': name,
+                                    'role': selectedRole,
+                                  })
+                                  .eq('user_id', user['user_id']);
+
+                              setState(() {
+                                final index = _users.indexWhere((u) => u['user_id'] == user['user_id']);
+                                if (index != -1) {
+                                  _users[index]['full_name'] = name;
+                                  _users[index]['role'] = selectedRole;
+                                }
+                              });
+
+                              nav.pop();
+                              _showSuccessDialog('تم تعديل بيانات المستخدم بنجاح');
+                            } on SocketException {
+                              setDialogState(() => isDialogLoading = false);
+                              _showSnackBar('لا يتوفر اتصال بالإنترنت', Colors.redAccent);
+                            } catch (e) {
+                              setDialogState(() => isDialogLoading = false);
+                              _showSnackBar('لا يتوفر اتصال بالإنترنت', Colors.redAccent);
+                            }
+                          },
+                    child: isDialogLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Text('حفظ التعديلات', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // نافذة تأكيد الحذف
+  void _showDeleteConfirmationDialog(Map<String, dynamic> user) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Row(
+              children: const [
+                Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+                SizedBox(width: 10),
+                Text(
+                  'تأكيد الحذف النهائي',
+                  style: TextStyle(color: Color(0xFF0F172A), fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            content: Text(
+              'هل أنت متأكد من حذف المستخدم "${user['full_name']}"؟ لا يمكن التراجع عن هذا الإجراء.',
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  elevation: 0,
+                ),
+                onPressed: () async {
+                  final nav = Navigator.of(context);
+                  try {
+                    await supabase
+                        .from('profiles')
+                        .delete()
+                        .eq('user_id', user['user_id']);
+
+                    setState(() {
+                      _users.removeWhere((u) => u['user_id'] == user['user_id']);
+                    });
+
+                    nav.pop();
+                    _showSuccessDialog('تم حذف المستخدم بنجاح');
+                  } on SocketException {
+                    nav.pop();
+                    _showSnackBar('لا يتوفر اتصال بالإنترنت', Colors.redAccent);
+                  } catch (e) {
+                    nav.pop();
+                    _showSnackBar('لا يتوفر اتصال بالإنترنت', Colors.redAccent);
+                  }
+                },
+                child: const Text('حذف نهائي', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   InputDecoration _dialogInputDecoration(String hint, IconData icon) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white54, fontSize: 14),
-      prefixIcon: Icon(icon, color: const Color(0xFF00E5FF), size: 20),
+      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+      prefixIcon: Icon(icon, color: const Color(0xFF0284C7), size: 20),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.05),
+      fillColor: const Color(0xFFF1F5F9),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
@@ -276,24 +487,65 @@ class _UsersManagementViewState extends State<UsersManagementView> {
 
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message, textAlign: TextAlign.center), backgroundColor: color, behavior: SnackBarBehavior.floating),
+      SnackBar(
+        content: Text(message, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  // دالة الشارة الرسمية الفاتحة
+  Widget _getRoleBadge(String role) {
+    String label = 'باحث';
+    Color color = const Color(0xFF0284C7);
+
+    if (role == 'admin') {
+      label = 'مدير النظام';
+      color = const Color(0xFFD97706);
+    } else if (role == 'supervisor') {
+      label = 'مشرف';
+      color = const Color(0xFF059669);
+    } else if (role == 'viewer') {
+      label = 'مدقق';
+      color = const Color(0xFF7C3AED);
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFFF8FAFC), // خلفية بيضاء رسمية فاتحة ونظيفة
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('إدارة المستخدمين', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        shadowColor: Colors.black.withOpacity(0.05),
+        title: const Text(
+          'إدارة المستخدمين والصلاحيات',
+          style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF00E5FF)))
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF0284C7)))
           : _users.isEmpty
-              ? const Center(child: Text('لا يوجد مستخدمون مسجلون حالياً', style: TextStyle(color: Colors.white70)))
+              ? const Center(
+                  child: Text('لا يوجد مستخدمون مسجلون حالياً', style: TextStyle(color: Colors.grey)),
+                )
               : ListView.builder(
                   itemCount: _users.length,
                   padding: const EdgeInsets.all(16),
@@ -302,57 +554,91 @@ class _UsersManagementViewState extends State<UsersManagementView> {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.white.withOpacity(0.12), Colors.white.withOpacity(0.04)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withOpacity(0.03),
                             blurRadius: 8,
-                            offset: const Offset(0, 4),
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
                       child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         leading: CircleAvatar(
-                          backgroundColor: const Color(0xFF00E5FF).withOpacity(0.2),
-                          child: const Icon(Icons.person_rounded, color: Color(0xFF00E5FF)),
+                          backgroundColor: const Color(0xFF0284C7).withOpacity(0.1),
+                          child: const Icon(Icons.admin_panel_settings_rounded, color: Color(0xFF0284C7)),
                         ),
                         title: Text(
                           user['full_name'] ?? 'بدون اسم',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                          style: const TextStyle(
+                            color: Color(0xFF0F172A),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            'الدور: ${user['role']}',
-                            style: const TextStyle(color: Color(0xFF00E5FF), fontSize: 13, fontWeight: FontWeight.w500),
+                          child: Row(
+                            children: [
+                              _getRoleBadge(user['role'] ?? 'researcher'),
+                            ],
                           ),
                         ),
-                        trailing: Switch(
-                          value: user['is_active'] ?? true,
-                          activeColor: const Color(0xFF00E5FF),
-                          activeTrackColor: const Color(0xFF0288D1).withOpacity(0.5),
-                          onChanged: (bool value) async {
-                            await supabase
-                                .from('profiles')
-                                .update({'is_active': value})
-                                .eq('user_id', user['user_id']);
-                          },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Transform.scale(
+                              scale: 0.85,
+                              child: Switch(
+                                value: user['is_active'] ?? true,
+                                activeColor: const Color(0xFF0284C7),
+                                activeTrackColor: const Color(0xFFBAE6FD),
+                                onChanged: (bool value) async {
+                                  setState(() {
+                                    _users[index]['is_active'] = value;
+                                  });
+                                  try {
+                                    await supabase
+                                        .from('profiles')
+                                        .update({'is_active': value})
+                                        .eq('user_id', user['user_id']);
+                                  } catch (e) {
+                                    setState(() {
+                                      _users[index]['is_active'] = !value;
+                                    });
+                                    _showSnackBar('لا يتوفر اتصال بالإنترنت', Colors.redAccent);
+                                  }
+                                },
+                              ),
+                            ),
+                            IconButton(
+                              constraints: const BoxConstraints(),
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              icon: const Icon(Icons.edit_rounded, color: Color(0xFF0284C7), size: 20),
+                              onPressed: () => _showEditUserDialog(user),
+                              tooltip: 'تعديل',
+                            ),
+                            IconButton(
+                              constraints: const BoxConstraints(),
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 20),
+                              onPressed: () => _showDeleteConfirmationDialog(user),
+                              tooltip: 'حذف',
+                            ),
+                          ],
                         ),
                       ),
                     );
                   },
                 ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF00E5FF),
-        icon: const Icon(Icons.person_add_rounded, color: Color(0xFF0A192F)),
-        label: const Text('إضافة مستخدم', style: TextStyle(color: Color(0xFF0A192F), fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF0284C7),
+        icon: const Icon(Icons.person_add_rounded, color: Colors.white),
+        label: const Text('إضافة مستخدم جديد', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         onPressed: _showAddUserDialog,
       ),
     );
